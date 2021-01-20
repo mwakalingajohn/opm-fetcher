@@ -8,7 +8,9 @@ Clone it from [github](https://github.com/mwakalingajohn/node-typescript-templat
 
 ```bash
 git clone https://github.com/mwakalingajohn/node-typescript-template.git
+
 cd node-typescript-template
+
 npm install
 ```
 
