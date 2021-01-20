@@ -39,31 +39,50 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var OPMChapterImagesHanlder_1 = __importDefault(require("./lib/handlers/OPMChapterImagesHanlder"));
-var OPMChaptersHandler_1 = __importDefault(require("./lib/handlers/OPMChaptersHandler"));
-(function () { return __awaiter(void 0, void 0, void 0, function () {
-    var opmHandler, opmChapters;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                opmHandler = new OPMChaptersHandler_1.default;
-                return [4 /*yield*/, opmHandler.fetch()];
-            case 1:
-                opmChapters = _a.sent();
-                opmChapters.response.forEach(function (chapter, i) { return __awaiter(void 0, void 0, void 0, function () {
-                    var chapterImagesHandler, chapterImages;
-                    return __generator(this, function (_a) {
-                        switch (_a.label) {
-                            case 0:
-                                chapterImagesHandler = new OPMChapterImagesHanlder_1.default(chapter.chapter, chapter.link);
-                                return [4 /*yield*/, chapterImagesHandler.fetch()];
-                            case 1:
-                                chapterImages = _a.sent();
-                                return [2 /*return*/];
-                        }
-                    });
-                }); });
-                return [2 /*return*/];
-        }
-    });
-}); })();
+var OPMRequest_1 = __importDefault(require("../requests/OPMRequest"));
+var OPMResponseParser_1 = __importDefault(require("../parsers/OPMResponseParser"));
+var fs = require('fs');
+var OPMHandler = /** @class */ (function () {
+    function OPMHandler() {
+        this.url = "https://ldkmanga.com/";
+        this.chaptersStorage = "./chptrs.json";
+        this.opmRequest = new OPMRequest_1.default;
+    }
+    OPMHandler.prototype.fetch = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.getChapters()];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    OPMHandler.prototype.getChapters = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var fd, opmParser, chapters;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.opmRequest.getChapters(this.url)];
+                    case 1:
+                        fd = _a.sent();
+                        opmParser = new OPMResponseParser_1.default(fd);
+                        chapters = opmParser.parse();
+                        if (chapters.response)
+                            this.storeChapters(chapters.response);
+                        return [2 /*return*/, chapters];
+                }
+            });
+        });
+    };
+    OPMHandler.prototype.storeChapters = function (chapters) {
+        var storeChapters = JSON.stringify(chapters);
+        fs.writeFileSync(this.chaptersStorage, storeChapters);
+    };
+    OPMHandler.prototype.readChapters = function () {
+        if (fs.existsSync(this.chaptersStorage))
+            return JSON.parse(fs.readFileSync(this.chaptersStorage));
+    };
+    return OPMHandler;
+}());
+exports.default = OPMHandler;

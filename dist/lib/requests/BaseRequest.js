@@ -39,31 +39,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var OPMChapterImagesHanlder_1 = __importDefault(require("./lib/handlers/OPMChapterImagesHanlder"));
-var OPMChaptersHandler_1 = __importDefault(require("./lib/handlers/OPMChaptersHandler"));
-(function () { return __awaiter(void 0, void 0, void 0, function () {
-    var opmHandler, opmChapters;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                opmHandler = new OPMChaptersHandler_1.default;
-                return [4 /*yield*/, opmHandler.fetch()];
-            case 1:
-                opmChapters = _a.sent();
-                opmChapters.response.forEach(function (chapter, i) { return __awaiter(void 0, void 0, void 0, function () {
-                    var chapterImagesHandler, chapterImages;
-                    return __generator(this, function (_a) {
-                        switch (_a.label) {
-                            case 0:
-                                chapterImagesHandler = new OPMChapterImagesHanlder_1.default(chapter.chapter, chapter.link);
-                                return [4 /*yield*/, chapterImagesHandler.fetch()];
-                            case 1:
-                                chapterImages = _a.sent();
-                                return [2 /*return*/];
-                        }
-                    });
-                }); });
-                return [2 /*return*/];
-        }
-    });
-}); })();
+var source_1 = __importDefault(require("got/dist/source"));
+var BaseRequest = /** @class */ (function () {
+    function BaseRequest() {
+    }
+    BaseRequest.prototype.get = function (url) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, source_1.default(url)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    return BaseRequest;
+}());
+exports.default = BaseRequest;

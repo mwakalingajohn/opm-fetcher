@@ -1,4 +1,17 @@
 "use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -39,31 +52,35 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var OPMChapterImagesHanlder_1 = __importDefault(require("./lib/handlers/OPMChapterImagesHanlder"));
-var OPMChaptersHandler_1 = __importDefault(require("./lib/handlers/OPMChaptersHandler"));
-(function () { return __awaiter(void 0, void 0, void 0, function () {
-    var opmHandler, opmChapters;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                opmHandler = new OPMChaptersHandler_1.default;
-                return [4 /*yield*/, opmHandler.fetch()];
-            case 1:
-                opmChapters = _a.sent();
-                opmChapters.response.forEach(function (chapter, i) { return __awaiter(void 0, void 0, void 0, function () {
-                    var chapterImagesHandler, chapterImages;
-                    return __generator(this, function (_a) {
-                        switch (_a.label) {
-                            case 0:
-                                chapterImagesHandler = new OPMChapterImagesHanlder_1.default(chapter.chapter, chapter.link);
-                                return [4 /*yield*/, chapterImagesHandler.fetch()];
-                            case 1:
-                                chapterImages = _a.sent();
-                                return [2 /*return*/];
-                        }
-                    });
-                }); });
-                return [2 /*return*/];
-        }
-    });
-}); })();
+var BaseRequest_1 = __importDefault(require("./BaseRequest"));
+var OPMRequest = /** @class */ (function (_super) {
+    __extends(OPMRequest, _super);
+    function OPMRequest() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.getChapters = function (url) { return __awaiter(_this, void 0, void 0, function () {
+            var body;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.get(url)];
+                    case 1:
+                        body = (_a.sent()).body;
+                        return [2 /*return*/, body];
+                }
+            });
+        }); };
+        _this.getImages = function (url) { return __awaiter(_this, void 0, void 0, function () {
+            var body;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.get(url)];
+                    case 1:
+                        body = (_a.sent()).body;
+                        return [2 /*return*/, body];
+                }
+            });
+        }); };
+        return _this;
+    }
+    return OPMRequest;
+}(BaseRequest_1.default));
+exports.default = OPMRequest;

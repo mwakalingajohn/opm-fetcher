@@ -39,31 +39,62 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var OPMChapterImagesHanlder_1 = __importDefault(require("./lib/handlers/OPMChapterImagesHanlder"));
-var OPMChaptersHandler_1 = __importDefault(require("./lib/handlers/OPMChaptersHandler"));
-(function () { return __awaiter(void 0, void 0, void 0, function () {
-    var opmHandler, opmChapters;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                opmHandler = new OPMChaptersHandler_1.default;
-                return [4 /*yield*/, opmHandler.fetch()];
-            case 1:
-                opmChapters = _a.sent();
-                opmChapters.response.forEach(function (chapter, i) { return __awaiter(void 0, void 0, void 0, function () {
-                    var chapterImagesHandler, chapterImages;
-                    return __generator(this, function (_a) {
-                        switch (_a.label) {
-                            case 0:
-                                chapterImagesHandler = new OPMChapterImagesHanlder_1.default(chapter.chapter, chapter.link);
-                                return [4 /*yield*/, chapterImagesHandler.fetch()];
-                            case 1:
-                                chapterImages = _a.sent();
-                                return [2 /*return*/];
-                        }
-                    });
-                }); });
-                return [2 /*return*/];
+var OPMRequest_1 = __importDefault(require("../requests/OPMRequest"));
+var OPMChaptersParser_1 = __importDefault(require("../parsers/OPMChaptersParser"));
+var fs = require('fs');
+var OPMChaptersHandler = /** @class */ (function () {
+    function OPMChaptersHandler() {
+        this.url = "https://ldkmanga.com/";
+        this.storageDirectory = "./.cache";
+        this.chaptersStorage = "chptrs.json";
+        this.opmRequest = new OPMRequest_1.default;
+    }
+    OPMChaptersHandler.prototype.fetch = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.getChapters()];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    OPMChaptersHandler.prototype.getChapters = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var chapters, fd, opmParser;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        chapters = this.readChapters();
+                        if (!!chapters) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.opmRequest.getChapters(this.url)];
+                    case 1:
+                        fd = _a.sent();
+                        opmParser = new OPMChaptersParser_1.default(fd);
+                        chapters = opmParser.parse();
+                        if (chapters.response)
+                            this.storeChapters(chapters);
+                        _a.label = 2;
+                    case 2: return [2 /*return*/, chapters];
+                }
+            });
+        });
+    };
+    OPMChaptersHandler.prototype.storeChapters = function (chapters) {
+        this.createDirectoryIfDoesntExist();
+        var storeChapters = JSON.stringify(chapters);
+        var file = this.storageDirectory + "/" + this.chaptersStorage;
+        fs.writeFileSync(file, storeChapters);
+    };
+    OPMChaptersHandler.prototype.readChapters = function () {
+        if (fs.existsSync(this.chaptersStorage))
+            return JSON.parse(fs.readFileSync(this.chaptersStorage));
+    };
+    OPMChaptersHandler.prototype.createDirectoryIfDoesntExist = function () {
+        if (!fs.existsSync(this.storageDirectory)) {
+            fs.mkdirSync(this.storageDirectory);
         }
-    });
-}); })();
+    };
+    return OPMChaptersHandler;
+}());
+exports.default = OPMChaptersHandler;
