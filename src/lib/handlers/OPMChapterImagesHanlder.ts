@@ -11,7 +11,7 @@ export default class OPMChapterImagesHandler {
 
     private opmRequest: OPMRequest
 
-    private imagesStorageDirectory: string = "./.cache/i/"
+    private imagesStorageDirectory: string = "./gui/res/i/"
 
     constructor(chapter: string, url: string) {
         this.opmRequest = new OPMRequest
@@ -20,7 +20,8 @@ export default class OPMChapterImagesHandler {
     }
 
     async fetch() {
-        return await this.getImages()
+        let images = await this.getImages()        
+        return images
     }
 
     async getImages() {
@@ -32,7 +33,7 @@ export default class OPMChapterImagesHandler {
             images              = opmImageParser.parse()
             if (images.response)
                 this.storeImages(images.response)
-        }
+        } 
 
         return images
     }
