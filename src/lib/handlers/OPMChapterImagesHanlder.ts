@@ -11,7 +11,7 @@ export default class OPMChapterImagesHandler {
 
     private opmRequest: OPMRequest
 
-    private imagesStorageDirectory: string = "./gui/res/i/"
+    private imagesStorageDirectory: string = __dirname + "/gui/res/i/"
 
     constructor(chapter: string, url: string) {
         this.opmRequest = new OPMRequest
@@ -39,11 +39,13 @@ export default class OPMChapterImagesHandler {
     }
 
     storeImages(images: any) {
+        return false
         let storeImages = JSON.stringify(images)
         fs.writeFileSync(this.getFilePath(), storeImages)
     }
 
     readImages() {
+        return false
         if (fs.existsSync(this.getFilePath()))
             return JSON.parse(fs.readFileSync(this.getFilePath()))
     }

@@ -9,7 +9,7 @@ export default class OPMChaptersHandler {
 
     private opmRequest: OPMRequest
 
-    private storageDirectory: string = "./gui/res/"
+    private storageDirectory: string = __dirname + "/gui/res/"
 
     private chaptersStorage: string = "chptrs.json"
 
@@ -43,6 +43,7 @@ export default class OPMChaptersHandler {
     }
 
     storeChapters(chapters: any) {
+        return false
         console.log("Storing chapters..");
         
         this.createDirectoryIfDoesntExist()
@@ -52,6 +53,7 @@ export default class OPMChaptersHandler {
     }
 
     readChapters() {
+        return false;
         console.log("Reading chapters..")
         let file = `${this.storageDirectory}${this.chaptersStorage}`
         if (fs.existsSync(file))
@@ -60,10 +62,9 @@ export default class OPMChaptersHandler {
             console.log(`Directory ${this.chaptersStorage} doesnt exist`);
     }
 
-    createDirectoryIfDoesntExist() {
-        console.log("Directory doesn't exist creating one!");
-        
+    createDirectoryIfDoesntExist() {        
         if (!fs.existsSync(this.storageDirectory)) {
+            console.log("Directory doesn't exist creating one!");
             fs.mkdirSync(this.storageDirectory);
         }
     }

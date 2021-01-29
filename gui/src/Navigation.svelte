@@ -1,6 +1,6 @@
 <script>
     import axios from "axios";
-    import { currentImageIndex, images, ROOT_URL } from "./store/store";
+    import { currentImageIndex, imageLoading, images, ROOT_URL } from "./store/store";
 
     var prevScrollpos = window.pageYOffset;
 
@@ -14,6 +14,10 @@
         prevScrollpos = currentScrollPos;
     };
 
+    document.addEventListener("click", function(){
+        document.getElementById("navigation").style.bottom = "30px";
+    })
+
     let chapters = getChapters();
     let loadedImages = []  
     let pageIndex
@@ -24,15 +28,17 @@
 
     function onChapterChangeHandler(e) {
         axios.get(`${ROOT_URL}/api/chapters/${e.target.value}/images`).then(res=>{
-            images.update(val=>res.data)
+            images.update(val=>res.data.response)
         });
     }
 
     function onPageChangeHandler(e){
+        scrollToTop()
         currentImageIndex.update(val=>e.target.value)
     }
 
     function onNextPressHandler(){
+        scrollToTop()
         currentImageIndex.update(val=>{            
             let newImageIndex = parseInt(val) + 1
             return newImageIndex >= 0?
@@ -42,6 +48,7 @@
     }
 
     function onPreviousPressHandler(){
+        scrollToTop()
         currentImageIndex.update(val=>{
             let newImageIndex = parseInt(val) - 1
             return newImageIndex >= 0?
@@ -50,13 +57,19 @@
         })
     }
 
-    const _loadedImages = images.subscribe(val=>{
+    function scrollToTop(){ 
+        document.body.scrollTop = 0
+        document.documentElement.scrollTop = 0
+        imageLoading.update(val=>true)
+    }
+
+    const _loadedImages = images.subscribe(val=>{ 
         loadedImages = val
     });
 
     const _pageIndex = currentImageIndex.subscribe(val =>{
         pageIndex = val
-    })
+    });
 </script>
 
 <div class="navigation shadow-lg p-3" id="navigation">
@@ -107,12 +120,12 @@
 
 <style>
     .navigation {
-        width: 900px;
+        width: 80%;
         background: white;
         position: fixed;
         z-index: 30;
         bottom: 30px;
-        left: 15%;
+        left: 10%;
         transition: bottom 0.3s;
     }
 </style>

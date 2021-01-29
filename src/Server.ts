@@ -10,6 +10,8 @@ const cors = require("cors")
 export default class Server {
 
     private data: any
+
+    private chapters: any
     
     start() {       
         this.data = new Data
@@ -33,10 +35,11 @@ export default class Server {
         app.get('/api/chapters', async (req, res) => {
             await this.data.process()
             let chapters = this.data.getChapters()
+            this.chapters = chapters
             res.send(chapters)
         });
         app.get('/api/chapters/:chapterId/images', async (req, res) => {
-            await this.data.process()
+            // await this.data.process()
             let chapterId = req.params.chapterId
             const images = await this.data.getImages(chapterId)
 

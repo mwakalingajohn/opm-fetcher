@@ -9,16 +9,8 @@ export default class Data{
         let opmHandler              = new OPMChaptersHandler
         let opmChapters             = await opmHandler.fetch() 
         this.chapters               = opmChapters
-        
-        opmChapters.response.forEach(async (chapter: any, i: any) => { 
-            let chapterImagesHandler    = new OPMChapterImagesHandler(
-                chapter.chapter,
-                chapter.link
-            )
-            let chapterImages = await chapterImagesHandler.fetch()        
-        });
 
-        return "done"
+        return this.chapters
     }
 
     async getImages(chapterId: any) {  

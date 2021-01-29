@@ -1,5 +1,7 @@
 <script>
-    import { currentImageIndex, images } from "./store/store";
+import { log } from "console";
+
+    import { currentImageIndex, imageLoading, images } from "./store/store";
 
     let src;
     let chapterImages;
@@ -11,9 +13,13 @@
     const _currentImage = currentImageIndex.subscribe((val) => { 
         src = chapterImages[val];
     }); 
+    
+    function imageLoaded(){
+        imageLoading.update(val=>false)
+    }
 </script>
 
-<img {src} alt="" id="page-image"/>
+<img {src} alt="" id="page-image" on:load="{imageLoaded}"/>
 
 <style>
     img {
